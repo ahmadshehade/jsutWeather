@@ -4,7 +4,7 @@ FROM richarvey/nginx-php-fpm:latest
 COPY . .
 
 # إعدادات الصورة
-ENV SKIP_COMPOSER 1
+ENV SKIP_COMPOSER 0   # ← غير هذا من 1 إلى 0 لتمكين تشغيل Composer
 ENV WEBROOT /var/www/html/public
 ENV PHP_ERRORS_STDERR 1
 ENV RUN_SCRIPTS 1
