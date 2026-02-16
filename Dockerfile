@@ -18,9 +18,12 @@ COPY . .
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# إعداد Laravel
-RUN cp .env.example .env || true
-RUN php artisan key:generate --force || true
+# إعداد Laravel (بدون الاعتماد على ملف .env)
+RUN php artisan config:cache || true
+RUN php artisan route:cache || true
+RUN php artisan view:cache || true
+
+# صلاحيات التخزين
 RUN chmod -R 777 storage bootstrap/cache
 
 # expose port
