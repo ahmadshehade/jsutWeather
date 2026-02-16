@@ -1,33 +1,37 @@
-FROM php:8.2-fpm
+# Dockerfile (production-ready, simple)
+FROM php:8.2-apache
 
-WORKDIR /var/www/html
-
-# تثبيت dependencies (مع دعم PostgreSQL)
+# إعداد system packages و PHP extensions
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libzip-dev \
     unzip \
     git \
     curl \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip
+    && docker-php-ext-install pdo pdo_pgsql zip
 
-# نسخ المشروع
+# تمكين mod_rewrite
+RUN a2enmod rewrite
+
+# نسخ Composer (multi-stage style)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+# انسخ ملفات المشروع
 COPY . .
 
-# تثبيت Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev --optimize-autoloader
+# صلاحيات
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# إعداد Laravel: نضمن أن يتم بناء الإعدادات من متغيرات البيئة فقط
-# لا تنسخ .env.example ولا تولد key هنا، لأنها ستأتي من البيئة
-RUN php artisan config:cache || true
-RUN php artisan route:cache || true
-RUN php artisan view:cache || true
+# تثبيت composer (بدون dev)
+RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction --no-scripts
 
-# صلاحيات التخزين
-RUN chmod -R 777 storage bootstrap/cache
+# لا تقم بعمل config:cache هنا! (سيتم عمل التصاريح أثناء start)
+# أنشئ ملف entrypoint لتشغيل المهام عند بدء الحاوية
 
-# expose port
-EXPOSE 8000
+EXPOSE 80
 
-CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
+ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["apache2-foreground"]
