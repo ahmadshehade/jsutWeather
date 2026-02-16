@@ -4,6 +4,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('/ping', function () {
+    return 'pong';
+});
 // =============================================
 // الصفحة الرئيسية - تفتح الطقس مباشرة
 // =============================================
