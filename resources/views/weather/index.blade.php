@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="https://openweathermap.org/img/wn/02d.png">
     <title>نافذة الطقس — توقعات احترافية مع خرائط متحركة (جميع الطبقات المجانية)</title>
@@ -47,6 +47,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* ========== المتغيرات الأساسية والتجاوب العالمي ========== */
         * {
             margin: 0;
             padding: 0;
@@ -74,9 +75,15 @@
             font-family: "Inter", "Cairo", system-ui, sans-serif;
             color: white;
             min-height: 100vh;
-            padding: 1.5rem 1.2rem;
+            padding: 1rem;
             line-height: 1.5;
             backdrop-filter: blur(2px);
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 1.5rem 1.2rem;
+            }
         }
 
         #loading-bar {
@@ -86,7 +93,7 @@
             width: 0%;
             height: 3px;
             background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            z-index: 999999; /* أعلى من كل شيء */
+            z-index: 999999;
             transition: width 0.3s ease;
             box-shadow: 0 0 10px var(--accent-primary);
         }
@@ -111,21 +118,28 @@
             margin: 0 auto;
         }
 
-        /* ========== header احترافي مع صورة المستخدم ========== */
+        /* ========== Header متجاوب ========== */
         .navbar-glass {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 1rem;
-            padding: 0.7rem 1.5rem;
-            margin-bottom: 2rem;
-            border-radius: 80px;
+            padding: 0.7rem 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 60px;
             background: rgba(5, 20, 30, 0.55);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.03);
             animation: slideDown 0.5s ease;
             position: relative;
-            z-index: 10000; /* أعلى من المحتوى */
+            z-index: 10000;
+        }
+
+        @media (min-width: 768px) {
+            .navbar-glass {
+                padding: 0.7rem 1.5rem;
+                margin-bottom: 2rem;
+            }
         }
 
         @keyframes slideDown {
@@ -143,45 +157,35 @@
         .brand-logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .logo-icon {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 30% 70% 70% 30% / 30% 55% 45% 70%;
             background: linear-gradient(145deg, #4facfe, #25d49c);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             transform: rotate(-5deg);
             box-shadow: 0 10px 25px #00b4ff40;
             animation: pulse 3s infinite;
         }
 
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(59, 158, 255, 0.7);
+        @media (min-width: 768px) {
+            .logo-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.6rem;
             }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(59, 158, 255, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(59, 158, 255, 0);
-            }
-        }
-
-        .title-tag {
-            line-height: 1.3;
         }
 
         .title-tag .main {
             font-weight: 600;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             letter-spacing: -0.3px;
             background: linear-gradient(135deg, #fff, #b8e1ff);
             -webkit-background-clip: text;
@@ -189,53 +193,75 @@
         }
 
         .title-tag .sub {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
         }
 
-        /* search container محسن */
+        @media (min-width: 768px) {
+            .title-tag .main {
+                font-size: 1.3rem;
+            }
+
+            .title-tag .sub {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* search wrapper */
         .search-wrapper {
             flex: 1;
-            min-width: 300px;
+            min-width: 200px;
             position: relative;
-            z-index: 10001; /* أعلى من الـ header */
+            z-index: 10001;
+        }
+
+        @media (min-width: 640px) {
+            .search-wrapper {
+                min-width: 300px;
+            }
         }
 
         .search-control {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 60px;
-            padding: 0.7rem 1.5rem 0.7rem 3rem;
+            padding: 0.5rem 1rem 0.5rem 2.8rem;
             color: white;
             transition: var(--transition-smooth);
             width: 100%;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ffffff' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: left 20px center;
+            background-position: left 15px center;
+            font-size: 0.9rem;
         }
 
-        .search-control:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(59, 158, 255, 0.2);
-            color: white;
-            outline: none;
-        }
-
-        .search-control::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+        @media (min-width: 768px) {
+            .search-control {
+                padding: 0.7rem 1.5rem 0.7rem 3rem;
+                background-position: left 20px center;
+                font-size: 1rem;
+            }
         }
 
         .btn--primary {
             border-radius: 60px;
             background: linear-gradient(145deg, #1f6fbb, #135b9e);
             border: none;
-            padding: 0.6rem 1.8rem;
+            padding: 0.5rem 1.2rem;
             font-weight: 500;
             color: white;
             transition: var(--transition-smooth);
             position: relative;
             overflow: hidden;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 768px) {
+            .btn--primary {
+                padding: 0.6rem 1.8rem;
+                font-size: 1rem;
+            }
         }
 
         .btn--primary::before {
@@ -263,7 +289,7 @@
             top: 100%;
             left: 0;
             right: 0;
-            z-index: 10002; /* أعلى من البحث */
+            z-index: 10002;
             background: rgba(10, 30, 45, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -273,18 +299,6 @@
             overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .search-result-item {
@@ -299,36 +313,37 @@
             transform: translateX(-5px);
         }
 
-        .search-result-item:last-child {
-            border-bottom: none;
-        }
-
-        /* قائمة المستخدم المحسنة - مع z-index عالي جداً */
+        /* user menu */
         .user-menu {
             display: flex;
             align-items: center;
-            gap: 15px;
             position: relative;
-            z-index: 10003; /* أعلى من نتائج البحث */
+            z-index: 10003;
         }
 
         .user-avatar {
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             background: linear-gradient(145deg, var(--accent-primary), var(--accent-secondary));
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: var(--transition-smooth);
             border: 2px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             text-transform: uppercase;
-            position: relative;
-            z-index: 10004;
+        }
+
+        @media (min-width: 768px) {
+            .user-avatar {
+                width: 42px;
+                height: 42px;
+                font-size: 1.2rem;
+            }
         }
 
         .user-avatar:hover {
@@ -339,19 +354,24 @@
 
         .user-dropdown {
             position: absolute;
-            top: 55px;
+            top: 50px;
             left: 0;
             background: rgba(15, 35, 50, 0.98);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 20px;
             padding: 12px;
-            min-width: 240px;
-            z-index: 999999 !important; /* أعلى من أي شيء آخر */
+            min-width: 200px;
+            z-index: 999999;
             display: none;
             animation: fadeIn 0.2s ease;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            pointer-events: auto; /* تأكيد قابلية النقر */
+        }
+
+        @media (min-width: 768px) {
+            .user-dropdown {
+                min-width: 240px;
+            }
         }
 
         .user-dropdown.show {
@@ -387,48 +407,59 @@
             margin: 8px 0;
         }
 
-        /* باقي التنسيقات - يجب أن تكون أقل z-index */
+        /* ========== الشبكة الرئيسية متجاوبة ========== */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 1.5rem;
+            grid-template-columns: 1fr;
+            gap: 1.2rem;
             align-items: stretch;
-            position: relative;
-            z-index: 1;
         }
 
-        @media (max-width: 900px) {
+        @media (min-width: 992px) {
             .dashboard-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 380px 1fr;
+                gap: 1.5rem;
             }
         }
 
         .current-card,
         .analytics-card {
-            min-height: 480px;
+            min-height: auto;
             display: flex;
             flex-direction: column;
-            padding: 1.5rem 1.2rem;
-            position: relative;
-            z-index: 2;
+            padding: 1.2rem;
+            border-radius: var(--radius-xl);
+            background: rgba(8, 28, 41, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-subtle);
         }
 
-        .current-card {
-            background: radial-gradient(145% 70% at 0% 20%, #1f445b, #0c1f2b);
-            border-radius: var(--radius-xl);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05);
+        @media (min-width: 768px) {
+            .current-card {
+                padding: 1.5rem;
+            }
+
+            .analytics-card {
+                padding: 1.5rem;
+            }
         }
 
         .temp-big {
-            font-size: 4.5rem;
+            font-size: 3rem;
             font-weight: 600;
             line-height: 1;
-            letter-spacing: -2px;
+            letter-spacing: -1px;
             background: linear-gradient(to bottom, #fff, #b8e1ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: glow 3s ease-in-out infinite;
+        }
+
+        @media (min-width: 768px) {
+            .temp-big {
+                font-size: 4.5rem;
+                letter-spacing: -2px;
+            }
         }
 
         @keyframes glow {
@@ -444,21 +475,30 @@
         }
 
         .weather-meta-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            margin: 1.2rem 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 0.6rem;
+            margin: 1rem 0;
         }
 
         .meta-chip {
             background: rgba(0, 30, 50, 0.45);
             backdrop-filter: blur(3px);
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.8rem;
             border-radius: 60px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             border: 1px solid rgba(255, 255, 255, 0.03);
-            flex: 1 0 auto;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (min-width: 768px) {
+            .meta-chip {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
         }
 
         .meta-chip:hover {
@@ -467,12 +507,13 @@
             border-color: var(--accent-primary);
         }
 
+        /* التوقعات الأسبوعية */
         .week-strip {
             display: flex;
             gap: 0.8rem;
             margin-top: 1.5rem;
             overflow-x: auto;
-            padding-bottom: 0.8rem;
+            padding-bottom: 1rem;
             scrollbar-width: thin;
             scrollbar-color: var(--accent-primary) #1e3b4b;
             align-items: stretch;
@@ -493,22 +534,29 @@
         }
 
         .day-card {
-            min-width: 160px;
+            min-width: 130px;
             background: rgba(16, 44, 60, 0.5);
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 32px;
-            padding: 1.2rem 0.8rem;
+            border-radius: 24px;
+            padding: 1rem 0.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.3rem;
             transition: var(--transition-smooth);
             cursor: pointer;
             flex: 0 0 auto;
             box-shadow: 0 10px 25px -10px #00000080;
             position: relative;
             overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .day-card {
+                min-width: 160px;
+                padding: 1.2rem 0.8rem;
+            }
         }
 
         .day-card::before {
@@ -538,7 +586,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             background: rgba(0, 100, 150, 0.5);
             padding: 0.2rem 0.5rem;
             border-radius: 20px;
@@ -548,20 +596,30 @@
 
         .day-name {
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             background: rgba(255, 255, 255, 0.02);
-            padding: 0.2rem 1rem;
+            padding: 0.2rem 0.8rem;
             border-radius: 60px;
-            backdrop-filter: blur(2px);
-            margin-top: 0.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .day-name {
+                font-size: 1rem;
+            }
         }
 
         .day-temp-range {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 650;
             background: linear-gradient(to bottom, #fff, #cae6ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        @media (min-width: 768px) {
+            .day-temp-range {
+                font-size: 1.5rem;
+            }
         }
 
         .day-stats {
@@ -621,27 +679,6 @@
             border-color: transparent;
         }
 
-        .analytics-card {
-            background: rgba(7, 25, 35, 0.6);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius-xl);
-            padding: 1.5rem;
-        }
-
-        .chart-container {
-            flex: 1;
-            min-height: 220px;
-            position: relative;
-        }
-
-        .stat-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 1rem;
-        }
-
         .unit-toggle {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 100px;
@@ -666,7 +703,7 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
-        /* ستايل المفضلة المحسن */
+        /* المفضلة */
         .favorites-section {
             max-height: 300px;
             overflow-y: auto;
@@ -694,12 +731,28 @@
             margin-bottom: 8px;
             transition: all 0.2s ease;
             border: 1px solid transparent;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
         }
 
         .favorite-item:hover {
             background: rgba(59, 158, 255, 0.1);
             border-color: var(--accent-primary);
             transform: translateX(-5px);
+        }
+
+        @media (max-width: 480px) {
+            .favorite-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .favorite-actions {
+                align-self: flex-end;
+            }
         }
 
         .favorite-item .city-name {
@@ -748,15 +801,16 @@
             color: white;
         }
 
-        /* رسائل التنبيه */
+        /* التنبيهات */
         .alert-custom {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 999998; /* أقل بقليل من القائمة */
-            min-width: 300px;
-            padding: 15px 25px;
+            z-index: 999998;
+            min-width: 280px;
+            max-width: 90%;
+            padding: 12px 20px;
             border-radius: 50px;
             background: rgba(10, 30, 45, 0.95);
             backdrop-filter: blur(10px);
@@ -781,11 +835,7 @@
             border-right: 5px solid var(--warning);
         }
 
-        .alert-custom i {
-            font-size: 1.5rem;
-        }
-
-        /* ستايل الخريطة */
+        /* الخريطة */
         .weather-map-container {
             margin-top: 1.5rem;
             border-radius: 20px;
@@ -800,8 +850,14 @@
             background: #0a1a24;
             border-radius: 20px;
             font-family: 'Cairo', sans-serif;
-            height: 600px;
+            height: 400px;
             width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .leaflet-container {
+                height: 600px;
+            }
         }
 
         .leaflet-popup-content-wrapper {
@@ -836,8 +892,8 @@
             color: white;
             padding: 8px 15px;
             border-radius: 30px;
-            font-size: 13px;
-            z-index: 10; /* أقل من القائمة */
+            font-size: 12px;
+            z-index: 10;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -866,10 +922,6 @@
             }
         }
 
-        .badge {
-            transition: opacity 0.3s ease;
-        }
-
         .layers-control-panel {
             background: rgba(10, 30, 45, 0.95);
             backdrop-filter: blur(10px);
@@ -877,11 +929,19 @@
             border-radius: 20px;
             padding: 15px;
             color: white;
-            max-height: 400px;
+            max-height: 70vh;
             overflow-y: auto;
             animation: slideUp 0.3s ease;
             position: relative;
-            z-index: 1000; /* أعلى من الخريطة */
+            z-index: 1000;
+            font-size: 0.9rem;
+        }
+
+        @media (min-width: 768px) {
+            .layers-control-panel {
+                max-height: 400px;
+                font-size: 1rem;
+            }
         }
 
         @keyframes slideUp {
@@ -904,6 +964,8 @@
             border-radius: 10px;
             transition: all 0.2s ease;
             cursor: pointer;
+            flex-wrap: wrap;
+            gap: 5px;
         }
 
         .layer-item:hover {
@@ -915,6 +977,18 @@
             border-right: 3px solid var(--accent-primary);
         }
 
+        @media (max-width: 480px) {
+            .layer-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .layer-item>div:last-child {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
         .layer-opacity-slider {
             width: 80px;
             height: 5px;
@@ -922,6 +996,12 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 5px;
             outline: none;
+        }
+
+        @media (max-width: 480px) {
+            .layer-opacity-slider {
+                width: 60px;
+            }
         }
 
         .layer-opacity-slider::-webkit-slider-thumb {
@@ -936,6 +1016,39 @@
         .footer-note {
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             padding-top: 1rem;
+        }
+
+        /* تحسينات عامة */
+        h5,
+        h6 {
+            font-size: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            h5 {
+                font-size: 1.25rem;
+            }
+
+            h6 {
+                font-size: 1rem;
+            }
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .btn-group .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        @media (min-width: 768px) {
+            .btn-group .btn-sm {
+                padding: 0.25rem 0.8rem;
+                font-size: 0.875rem;
+            }
         }
     </style>
 </head>
@@ -992,7 +1105,8 @@
                             <div class="user-dropdown-divider"></div>
                             <form method="POST" action="{{ route('logout') }}" id="logout-form">
                                 @csrf
-                                <a href="#" class="user-dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <a href="#" class="user-dropdown-item"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="bi bi-box-arrow-right"></i>
                                     <span>تسجيل خروج</span>
                                 </a>
@@ -1012,9 +1126,7 @@
             </div>
         </header>
 
-        <!-- باقي محتوى الصفحة (كما هو) -->
-        <!-- ... (نفس المحتوى السابق) ... -->
-
+        <!-- التنبيهات -->
         @if (session('success'))
             <div class="alert-custom success animate__animated animate__fadeInDown">
                 <i class="bi bi-check-circle-fill" style="color: var(--success);"></i>
@@ -1028,23 +1140,21 @@
                 <span>{{ session('error') }}</span>
             </div>
         @endif
-
         @if (isset($weather) || isset($dailySummaries))
-
             <!-- الشبكة الرئيسية -->
             <div class="dashboard-grid">
                 <!-- العمود الأيسر -->
                 <section class="current-card" data-aos="fade-left">
-                    <div class="d-flex justify-content-between align-items-start">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
                         <div>
-                            <h2 style="font-weight: 500; font-size:1.6rem; margin:0;">
+                            <h2 style="font-weight: 500; font-size:1.4rem; margin:0;">
                                 <i class="bi bi-geo-alt-fill" style="color: var(--accent-primary);"></i>
                                 {{ $displayName ?? ($weather['name'] ?? ($input ?? 'اللاذقية')) }}
                             </h2>
                             <p class="text-muted small"><i class="bi bi-clock"></i> آخر تحديث:
                                 {{ now()->format('H:i') }}</p>
                         </div>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 flex-wrap">
                             @auth
                                 @php
                                     $isFavorite = false;
@@ -1075,7 +1185,7 @@
                             {{ round($weather['main']['temp'] ?? ($dailySummaries[0]['max'] ?? 26)) }}°
                         </span>
                         <img src="https://openweathermap.org/img/wn/{{ $weather['weather'][0]['icon'] ?? ($dailySummaries[0]['icon'] ?? '01d') }}@4x.png"
-                            width="90" height="90" alt="أيقونة الطقس"
+                            width="70" height="70" alt="أيقونة الطقس"
                             class="ms-2 weather-icon-animated animate__animated animate__pulse animate__infinite"
                             onerror="this.src='https://openweathermap.org/img/wn/01d@4x.png'">
                     </div>
@@ -1120,7 +1230,7 @@
                                 <span
                                     class="day-name">{{ \Carbon\Carbon::parse($day['date'])->translatedFormat('D') }}</span>
                                 <img src="https://openweathermap.org/img/wn/{{ $day['icon'] }}@2x.png"
-                                    width="56" height="56" alt="أيقونة"
+                                    width="48" height="48" alt="أيقونة"
                                     onerror="this.src='https://openweathermap.org/img/wn/02d@2x.png'">
                                 <span class="day-temp-range">{{ $day['max'] }}° / {{ $day['min'] }}°</span>
                                 <div class="humidity-indicator">
@@ -1132,8 +1242,8 @@
                             @foreach ($sampleDays as $i => $dayName)
                                 <div class="day-card">
                                     <span class="day-name">{{ $dayName }}</span>
-                                    <img src="https://openweathermap.org/img/wn/02d@2x.png" width="56"
-                                        height="56">
+                                    <img src="https://openweathermap.org/img/wn/02d@2x.png" width="48"
+                                        height="48">
                                     <span class="day-temp-range">--° / --°</span>
                                     <div class="humidity-indicator">
                                         <div class="humidity-fill" style="width: 50%"></div>
@@ -1156,7 +1266,7 @@
                         @auth
                             @if ($favorites->count() > 0)
                                 @foreach ($favorites as $fav)
-                                    <div class="favorite-item d-flex justify-content-between align-items-center">
+                                    <div class="favorite-item">
                                         <div>
                                             <div class="city-name">
                                                 <i class="bi bi-star-fill text-warning ms-2"></i>
@@ -1170,13 +1280,13 @@
                                             @endif
                                         </div>
                                         <div class="favorite-actions">
-                                            <button class="view-btn"
+                                            <button class="btn btn-sm btn-outline-info"
                                                 onclick="window.location.href='{{ route('weather.index', ['city' => $fav->lat . ',' . $fav->lon]) }}'"
                                                 title="عرض">
                                                 <i class="bi bi-eye"></i>
                                             </button>
-                                            <button class="delete-btn" onclick="removeFavorite({{ $fav->id }})"
-                                                title="حذف">
+                                            <button class="btn btn-sm btn-outline-danger"
+                                                onclick="removeFavorite({{ $fav->id }})" title="حذف">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -1227,7 +1337,7 @@
 
                 <!-- العمود الأيمن (الرسم البياني) -->
                 <aside class="analytics-card" data-aos="fade-right">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
                         <h5 class="fw-semibold"><i class="bi bi-graph-up-arrow ms-2"
                                 style="color: var(--accent-primary);"></i> حرارة / رطوبة (24 ساعة)</h5>
                         <div class="d-flex gap-2">
@@ -1241,7 +1351,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="chart-container">
+                    <div class="chart-container" style="min-height: 200px;">
                         <canvas id="hourlyChart"></canvas>
                     </div>
                 </aside>
@@ -1279,7 +1389,7 @@
                     </div>
 
                     <div class="weather-map-container position-relative">
-                        <div id="weatherMap" style="height: 600px; width: 100%;"></div>
+                        <div id="weatherMap" style="height: 400px; width: 100%;"></div>
 
                         <!-- مؤشر شدة العواصف -->
                         <div id="stormSeverity" class="position-absolute top-0 start-0 m-3 p-2 rounded-pill"
@@ -1580,7 +1690,7 @@
                 <div class="mt-4">
                     <form method="GET" action="{{ route('weather.index') }}"
                         class="d-flex justify-content-center gap-2">
-                        <input type="text" name="city" class="form-control w-25"
+                        <input type="text" name="city" class="form-control w-75 w-sm-50"
                             placeholder="مثال: London, Paris, دمشق">
                         <button type="submit" class="btn btn-primary">بحث</button>
                     </form>
@@ -1593,20 +1703,20 @@
                 MODIS, Blitzortung (عبر WebSocket), Zoom Earth | جميع الخدمات مجانية</span>
         </div>
     </div>
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // تهيئة AOS للتمرير
         AOS.init({
-            duration: 1000,
+            duration: 800,
             once: true
         });
 
         // دالة قائمة المستخدم (معدلة لإغلاق القائمة بشكل صحيح)
         function toggleUserMenu(event) {
             event.stopPropagation();
-            document.getElementById('userDropdown').classList.toggle('show');
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
         }
 
         // إغلاق القائمة عند النقر خارجها
@@ -1620,7 +1730,7 @@
             }
         };
 
-        // باقي الدوال (كما هي)
+        // دوال شريط التحميل
         function showLoadingBar() {
             document.getElementById('loading-bar').style.width = '60%';
         }
@@ -1681,7 +1791,7 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
+                    maintainAspectRatio: true,
                     plugins: {
                         legend: {
                             display: false
@@ -1691,9 +1801,7 @@
                             titleColor: '#f0f9ff',
                             callbacks: {
                                 label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    let value = context.raw;
-                                    return label + ': ' + value + '°' + currentUnit;
+                                    return context.dataset.label + ': ' + context.raw + '°' + currentUnit;
                                 }
                             }
                         }
@@ -1703,7 +1811,10 @@
                             ticks: {
                                 color: '#b0d4f0',
                                 maxRotation: 45,
-                                minRotation: 40
+                                minRotation: 40,
+                                font: {
+                                    size: 10
+                                }
                             },
                             grid: {
                                 color: 'rgba(255,255,255,0.03)'
@@ -1711,7 +1822,10 @@
                         },
                         y: {
                             ticks: {
-                                color: '#b0d4f0'
+                                color: '#b0d4f0',
+                                font: {
+                                    size: 10
+                                }
                             },
                             grid: {
                                 color: 'rgba(255,255,255,0.03)'
@@ -1772,8 +1886,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'خطأ',
-                    text: 'لا يمكن إضافة هذه المدينة للمفضلة',
-                    confirmButtonColor: '#3b9eff'
+                    text: 'لا يمكن إضافة هذه المدينة للمفضلة'
                 });
                 return;
             }
@@ -1850,8 +1963,7 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'خطأ',
-                                text: data.message || 'حدث خطأ',
-                                confirmButtonColor: '#3b9eff'
+                                text: data.message || 'حدث خطأ'
                             });
                         }
                     });
@@ -1860,8 +1972,7 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'تنبيه',
-                text: 'يجب تسجيل الدخول أولاً',
-                confirmButtonColor: '#3b9eff'
+                text: 'يجب تسجيل الدخول أولاً'
             }).then(() => {
                 window.location.href = '{{ route('login') }}';
             });
@@ -1917,12 +2028,10 @@
             searchInput.addEventListener('input', function() {
                 clearTimeout(searchTimeout);
                 const query = this.value.trim();
-
                 if (query.length < 2 || query.includes(',')) {
                     searchResults.style.display = 'none';
                     return;
                 }
-
                 searchTimeout = setTimeout(() => {
                     fetch(`{{ route('weather.search') }}?q=${encodeURIComponent(query)}`)
                         .then(response => response.json())
@@ -1965,7 +2074,7 @@
             document.getElementById('searchText').innerHTML = ' جاري البحث...';
         });
 
-        // ==================== متغيرات الخريطة العامة ====================
+        // ==================== دوال الخريطة الكاملة ====================
         let map, streetMap, satelliteLayer, terrainMap, darkMap;
         let windLayer, rainViewerLayers = [],
             cloudLayer, tempLayer, pressureLayer, snowLayer, vegetationLayer, firesLayer, eumetsatLayer;
@@ -1975,7 +2084,7 @@
         let currentRainViewerIndex = 0;
         let currentBaseLayer = 'street';
 
-        // ==================== دوال مساعدة ====================
+        // دوال مساعدة
         function showMapTip(message, type = 'info') {
             const tip = document.createElement('div');
             tip.className = `weather-layer-tip ${type}`;
@@ -2010,7 +2119,6 @@
             );
         }
 
-        // تحديث مؤشر شدة العواصف (محاكاة)
         function updateStormSeverity() {
             const severityDiv = document.getElementById('stormSeverity');
             if (!severityDiv) return;
@@ -2030,7 +2138,7 @@
             }
         }
 
-        // ==================== طبقة البرق (لحظي عبر WebSocket) ====================
+        // طبقة البرق
         function setupLightningLayer(mapInstance) {
             let lightningMarkers = [];
             let socket = null;
@@ -2038,7 +2146,6 @@
             let currentUrlIndex = 0;
             let isActive = false;
 
-            // قائمة بعناوين WebSocket المحتملة
             const wsUrls = [
                 'wss://ws.lightningmaps.org',
                 'wss://ws1.blitzortung.org',
@@ -2046,12 +2153,11 @@
                 'wss://live.blitzortung.org'
             ];
 
-            // دالة لإنشاء أيقونة البرق مع لون حسب العمر
             function createLightningIcon(time) {
                 const age = Date.now() - (time * 1000);
-                let color = '#ffaa00'; // أصفر للأحدث
-                if (age > 60000) color = '#ff5500'; // برتقالي بعد دقيقة
-                if (age > 120000) color = '#ff0000'; // أحمر بعد دقيقتين
+                let color = '#ffaa00';
+                if (age > 60000) color = '#ff5500';
+                if (age > 120000) color = '#ff0000';
                 return L.divIcon({
                     html: `<div style="font-size: 24px; color: ${color}; text-shadow: 0 0 10px ${color};">⚡</div>`,
                     className: 'lightning-icon',
@@ -2061,7 +2167,6 @@
                 });
             }
 
-            // دالة لإضافة صاعقة إلى الخريطة
             function addStrike(lat, lon, time, strength = 15) {
                 const marker = L.marker([lat, lon], {
                     icon: createLightningIcon(time),
@@ -2077,7 +2182,6 @@
                 }, 5 * 60 * 1000);
             }
 
-            // دالة الاتصال بـ WebSocket
             function connectWebSocket() {
                 if (!isActive || (socket && socket.readyState === WebSocket.OPEN)) return;
 
@@ -2108,7 +2212,6 @@
                             addStrike(data.lat, data.lon, data.time, data.strength || 15);
                         }
                     } catch (e) {
-                        // تجاهل الرسائل غير JSON (مثل ping)
                         console.log('رسالة غير JSON:', event.data);
                     }
                 };
@@ -2116,7 +2219,6 @@
                 socket.onerror = function(err) {
                     console.error('❌ خطأ في WebSocket:', err);
                     socket = null;
-                    // جرب العنوان التالي بعد فشل هذا
                     currentUrlIndex = (currentUrlIndex + 1) % wsUrls.length;
                     if (isActive) {
                         reconnectTimer = setTimeout(connectWebSocket, 5000);
@@ -2131,11 +2233,10 @@
                 };
             }
 
-            // ربط زر التبديل
             document.getElementById('lightning-toggle').addEventListener('change', function(e) {
                 isActive = e.target.checked;
                 if (isActive) {
-                    currentUrlIndex = 0; // ابدأ من أول عنوان
+                    currentUrlIndex = 0;
                     connectWebSocket();
                     document.getElementById('lightningStatus').style.opacity = '1';
                     showMapTip('⚡ تم تفعيل طبقة البرق المباشر', 'info');
@@ -2155,7 +2256,6 @@
                 updateStormSeverity();
             });
 
-            // التحكم بالشفافية
             document.getElementById('lightning-opacity').addEventListener('input', function(e) {
                 const opacity = parseFloat(e.target.value);
                 lightningMarkers.forEach(marker => {
@@ -2166,6 +2266,7 @@
             });
         }
 
+        // طبقة العواصف
         function setupStormsLayer(mapInstance, apiKey) {
             stormsLayer = L.tileLayer(
                 `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${apiKey}`, {
@@ -2190,6 +2291,7 @@
             });
         }
 
+        // طبقة الغيوم الداكنة
         function setupDarkCloudsLayer(mapInstance, apiKey) {
             darkCloudsLayer = L.tileLayer(
                 `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${apiKey}`, {
@@ -2222,6 +2324,7 @@
             });
         }
 
+        // طبقة الأعاصير
         function setupCyclonesLayer(mapInstance) {
             cyclonesLayer = L.tileLayer.wms('https://tiles.zoom.earth/wms/cyclones', {
                 layers: 'cyclones',
@@ -2245,7 +2348,7 @@
             });
         }
 
-        // ==================== دالة تحديث رادار RainViewer ====================
+        // تحديث رادار RainViewer
         function refreshRainViewer() {
             setInterval(() => {
                 if (map && document.getElementById('rainviewer-toggle').checked) {
@@ -2361,7 +2464,7 @@
                 });
         }
 
-        // ==================== دوال تبديل الطبقات الأساسية ====================
+        // دوال تبديل الطبقات الأساسية
         window.switchBaseLayer = function(type) {
             const layers = {
                 'street': streetMap,
@@ -2389,7 +2492,7 @@
             });
         };
 
-        // ==================== دالة تهيئة الخريطة الرئيسية ====================
+        // دالة تهيئة الخريطة الرئيسية
         function initWeatherMap() {
             @if (isset($coordinates))
                 if (typeof L === 'undefined' || !document.getElementById('weatherMap')) {
@@ -2553,7 +2656,7 @@
                     setupRainViewerLayers(map);
                     refreshRainViewer();
 
-                    // ربط أزرار الطبقات الموجودة سابقاً
+                    // ربط أزرار الطبقات
                     document.getElementById('globalrain-toggle').addEventListener('change', function(e) {
                         if (globalRainLayer) {
                             if (e.target.checked) {
