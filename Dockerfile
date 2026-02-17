@@ -9,8 +9,8 @@ RUN chown -R www-data:www-data /var/www/html \
 
 USER www-data
 
+RUN composer install --no-dev --working-dir=/var/www/html
+
+
 ENV PORT=8080
-
 ENV AUTORUN_MIGRATIONS=true
-
-# ENV PHP_OPCACHE_ENABLE=1
