@@ -47,7 +47,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* ========== المتغيرات الأساسية والتجاوب العالمي ========== */
+        /* ========== المتغيرات الأساسية والتجاوب العالمي المحسّن ========== */
         * {
             margin: 0;
             padding: 0;
@@ -75,9 +75,16 @@
             font-family: "Inter", "Cairo", system-ui, sans-serif;
             color: white;
             min-height: 100vh;
-            padding: 1rem;
+            padding: 0.5rem;
             line-height: 1.5;
             backdrop-filter: blur(2px);
+        }
+
+        /* تحسين المسافات للشاشات الصغيرة */
+        @media (min-width: 480px) {
+            body {
+                padding: 0.75rem;
+            }
         }
 
         @media (min-width: 768px) {
@@ -118,14 +125,14 @@
             margin: 0 auto;
         }
 
-        /* ========== Header متجاوب ========== */
+        /* ========== Header متجاوب محسّن ========== */
         .navbar-glass {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             padding: 0.7rem 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             border-radius: 60px;
             background: rgba(5, 20, 30, 0.55);
             backdrop-filter: blur(10px);
@@ -135,9 +142,16 @@
             z-index: 10000;
         }
 
+        @media (min-width: 640px) {
+            .navbar-glass {
+                gap: 1rem;
+                padding: 0.7rem 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+
         @media (min-width: 768px) {
             .navbar-glass {
-                padding: 0.7rem 1.5rem;
                 margin-bottom: 2rem;
             }
         }
@@ -147,7 +161,6 @@
                 transform: translateY(-100%);
                 opacity: 0;
             }
-
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -157,19 +170,19 @@
         .brand-logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 30% 70% 70% 30% / 30% 55% 45% 70%;
             background: linear-gradient(145deg, #4facfe, #25d49c);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             transform: rotate(-5deg);
             box-shadow: 0 10px 25px #00b4ff40;
             animation: pulse 3s infinite;
@@ -185,7 +198,7 @@
 
         .title-tag .main {
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
             letter-spacing: -0.3px;
             background: linear-gradient(135deg, #fff, #b8e1ff);
             -webkit-background-clip: text;
@@ -193,7 +206,7 @@
         }
 
         .title-tag .sub {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
         }
 
@@ -201,7 +214,6 @@
             .title-tag .main {
                 font-size: 1.3rem;
             }
-
             .title-tag .sub {
                 font-size: 0.75rem;
             }
@@ -217,7 +229,7 @@
 
         @media (min-width: 640px) {
             .search-wrapper {
-                min-width: 300px;
+                min-width: 280px;
             }
         }
 
@@ -225,14 +237,15 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 60px;
-            padding: 0.5rem 1rem 0.5rem 2.8rem;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
             color: white;
             transition: var(--transition-smooth);
             width: 100%;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ffffff' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: left 15px center;
-            font-size: 0.9rem;
+            background-position: left 12px center;
+            background-size: 16px;
+            font-size: 0.85rem;
         }
 
         @media (min-width: 768px) {
@@ -247,14 +260,17 @@
             border-radius: 60px;
             background: linear-gradient(145deg, #1f6fbb, #135b9e);
             border: none;
-            padding: 0.5rem 1.2rem;
+            padding: 0.5rem 1rem;
             font-weight: 500;
             color: white;
             transition: var(--transition-smooth);
             position: relative;
             overflow: hidden;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         @media (min-width: 768px) {
@@ -295,17 +311,18 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             margin-top: 5px;
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             animation: fadeIn 0.2s ease;
         }
 
         .search-result-item {
-            padding: 12px 15px;
+            padding: 10px 12px;
             cursor: pointer;
             transition: all 0.2s ease;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
         }
 
         .search-result-item:hover {
@@ -322,15 +339,15 @@
         }
 
         .user-avatar {
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: linear-gradient(145deg, var(--accent-primary), var(--accent-secondary));
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: var(--transition-smooth);
             border: 2px solid rgba(255, 255, 255, 0.2);
@@ -354,14 +371,14 @@
 
         .user-dropdown {
             position: absolute;
-            top: 50px;
+            top: 45px;
             left: 0;
             background: rgba(15, 35, 50, 0.98);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 20px;
-            padding: 12px;
-            min-width: 200px;
+            padding: 10px;
+            min-width: 180px;
             z-index: 999999;
             display: none;
             animation: fadeIn 0.2s ease;
@@ -371,6 +388,7 @@
         @media (min-width: 768px) {
             .user-dropdown {
                 min-width: 240px;
+                top: 50px;
             }
         }
 
@@ -379,7 +397,7 @@
         }
 
         .user-dropdown-item {
-            padding: 12px 15px;
+            padding: 10px 12px;
             border-radius: 12px;
             transition: all 0.2s ease;
             cursor: pointer;
@@ -387,7 +405,8 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            font-size: 0.9rem;
         }
 
         .user-dropdown-item:hover {
@@ -398,21 +417,27 @@
         .user-dropdown-item i {
             width: 20px;
             color: var(--accent-primary);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .user-dropdown-divider {
             height: 1px;
             background: rgba(255, 255, 255, 0.1);
-            margin: 8px 0;
+            margin: 6px 0;
         }
 
-        /* ========== الشبكة الرئيسية متجاوبة ========== */
+        /* ========== الشبكة الرئيسية متجاوبة بشكل محسّن ========== */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1.2rem;
+            gap: 1rem;
             align-items: stretch;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                gap: 1.2rem;
+            }
         }
 
         @media (min-width: 992px) {
@@ -427,25 +452,27 @@
             min-height: auto;
             display: flex;
             flex-direction: column;
-            padding: 1.2rem;
+            padding: 1rem;
             border-radius: var(--radius-xl);
             background: rgba(8, 28, 41, 0.65);
             backdrop-filter: blur(10px);
             border: 1px solid var(--border-subtle);
         }
 
-        @media (min-width: 768px) {
-            .current-card {
-                padding: 1.5rem;
+        @media (min-width: 480px) {
+            .current-card, .analytics-card {
+                padding: 1.2rem;
             }
+        }
 
-            .analytics-card {
+        @media (min-width: 768px) {
+            .current-card, .analytics-card {
                 padding: 1.5rem;
             }
         }
 
         .temp-big {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 600;
             line-height: 1;
             letter-spacing: -1px;
@@ -453,6 +480,12 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: glow 3s ease-in-out infinite;
+        }
+
+        @media (min-width: 480px) {
+            .temp-big {
+                font-size: 3.5rem;
+            }
         }
 
         @media (min-width: 768px) {
@@ -463,12 +496,9 @@
         }
 
         @keyframes glow {
-
-            0%,
-            100% {
+            0%, 100% {
                 text-shadow: 0 0 20px rgba(59, 158, 255, 0.5);
             }
-
             50% {
                 text-shadow: 0 0 40px rgba(59, 158, 255, 0.8);
             }
@@ -476,22 +506,32 @@
 
         .weather-meta-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 0.6rem;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 0.5rem;
             margin: 1rem 0;
+        }
+
+        @media (min-width: 480px) {
+            .weather-meta-grid {
+                grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+                gap: 0.6rem;
+            }
         }
 
         .meta-chip {
             background: rgba(0, 30, 50, 0.45);
             backdrop-filter: blur(3px);
-            padding: 0.5rem 0.8rem;
+            padding: 0.4rem 0.6rem;
             border-radius: 60px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             border: 1px solid rgba(255, 255, 255, 0.03);
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         @media (min-width: 768px) {
@@ -510,7 +550,7 @@
         /* التوقعات الأسبوعية */
         .week-strip {
             display: flex;
-            gap: 0.8rem;
+            gap: 0.6rem;
             margin-top: 1.5rem;
             overflow-x: auto;
             padding-bottom: 1rem;
@@ -520,7 +560,7 @@
         }
 
         .week-strip::-webkit-scrollbar {
-            height: 5px;
+            height: 4px;
         }
 
         .week-strip::-webkit-scrollbar-track {
@@ -534,22 +574,29 @@
         }
 
         .day-card {
-            min-width: 130px;
+            min-width: 110px;
             background: rgba(16, 44, 60, 0.5);
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.03);
             border-radius: 24px;
-            padding: 1rem 0.5rem;
+            padding: 0.8rem 0.3rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.3rem;
+            gap: 0.2rem;
             transition: var(--transition-smooth);
             cursor: pointer;
             flex: 0 0 auto;
             box-shadow: 0 10px 25px -10px #00000080;
             position: relative;
             overflow: hidden;
+        }
+
+        @media (min-width: 480px) {
+            .day-card {
+                min-width: 130px;
+                padding: 1rem 0.5rem;
+            }
         }
 
         @media (min-width: 768px) {
@@ -584,11 +631,11 @@
 
         .rain-indicator {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 0.7rem;
+            top: 8px;
+            right: 8px;
+            font-size: 0.6rem;
             background: rgba(0, 100, 150, 0.5);
-            padding: 0.2rem 0.5rem;
+            padding: 0.2rem 0.4rem;
             border-radius: 20px;
             color: #7cc8ff;
             z-index: 2;
@@ -596,9 +643,9 @@
 
         .day-name {
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             background: rgba(255, 255, 255, 0.02);
-            padding: 0.2rem 0.8rem;
+            padding: 0.2rem 0.6rem;
             border-radius: 60px;
         }
 
@@ -609,11 +656,17 @@
         }
 
         .day-temp-range {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 650;
             background: linear-gradient(to bottom, #fff, #cae6ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        @media (min-width: 480px) {
+            .day-temp-range {
+                font-size: 1.2rem;
+            }
         }
 
         @media (min-width: 768px) {
@@ -624,21 +677,21 @@
 
         .day-stats {
             display: flex;
-            gap: 0.8rem;
+            gap: 0.6rem;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             width: 100%;
-            margin: 0.3rem 0;
+            margin: 0.2rem 0;
         }
 
         .humidity-indicator {
             width: 100%;
-            height: 6px;
+            height: 5px;
             background: rgba(0, 20, 30, 0.5);
             border-radius: 10px;
             overflow: hidden;
-            margin: 0.3rem 0;
+            margin: 0.2rem 0;
         }
 
         .humidity-fill {
@@ -656,7 +709,6 @@
             0% {
                 background-position: 200% 0;
             }
-
             100% {
                 background-position: -200% 0;
             }
@@ -666,8 +718,8 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             background: rgba(0, 0, 0, 0.25);
             border-radius: 40px;
-            font-size: 0.75rem;
-            padding: 0.35rem 1rem;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.8rem;
             margin-top: 0.2rem;
             transition: 0.2s;
             color: white;
@@ -683,16 +735,18 @@
             background: rgba(0, 0, 0, 0.3);
             border-radius: 100px;
             border: 1px solid rgba(255, 255, 255, 0.08);
+            display: inline-flex;
         }
 
         .unit-btn {
             background: transparent;
             border: none;
             color: white;
-            padding: 0.4rem 1rem;
+            padding: 0.3rem 0.8rem;
             border-radius: 60px;
             font-weight: 500;
             transition: all 0.2s ease;
+            font-size: 0.8rem;
         }
 
         .unit-btn.active {
@@ -705,13 +759,13 @@
 
         /* المفضلة */
         .favorites-section {
-            max-height: 300px;
+            max-height: 280px;
             overflow-y: auto;
             padding-right: 5px;
         }
 
         .favorites-section::-webkit-scrollbar {
-            width: 5px;
+            width: 4px;
         }
 
         .favorites-section::-webkit-scrollbar-track {
@@ -727,15 +781,15 @@
         .favorite-item {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
-            padding: 10px;
-            margin-bottom: 8px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
             transition: all 0.2s ease;
             border: 1px solid transparent;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 8px;
         }
 
         .favorite-item:hover {
@@ -746,23 +800,24 @@
 
         @media (max-width: 480px) {
             .favorite-item {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: row;
+                align-items: center;
+                flex-wrap: wrap;
             }
-
             .favorite-actions {
-                align-self: flex-end;
+                margin-right: auto;
             }
         }
 
         .favorite-item .city-name {
             font-weight: 600;
             color: white;
+            font-size: 0.9rem;
         }
 
         .favorite-item .city-temp {
             color: var(--accent-primary);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .favorite-actions {
@@ -771,14 +826,15 @@
         }
 
         .favorite-actions button {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
+            padding: 0;
         }
 
         .favorite-actions .view-btn {
@@ -804,13 +860,13 @@
         /* التنبيهات */
         .alert-custom {
             position: fixed;
-            top: 20px;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 999998;
-            min-width: 280px;
+            min-width: 260px;
             max-width: 90%;
-            padding: 12px 20px;
+            padding: 10px 16px;
             border-radius: 50px;
             background: rgba(10, 30, 45, 0.95);
             backdrop-filter: blur(10px);
@@ -818,9 +874,10 @@
             color: white;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             animation: slideDown 0.3s ease;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-size: 0.9rem;
         }
 
         .alert-custom.success {
@@ -850,11 +907,23 @@
             background: #0a1a24;
             border-radius: 20px;
             font-family: 'Cairo', sans-serif;
-            height: 400px;
+            height: 350px;
             width: 100%;
         }
 
+        @media (min-width: 640px) {
+            .leaflet-container {
+                height: 400px;
+            }
+        }
+
         @media (min-width: 768px) {
+            .leaflet-container {
+                height: 500px;
+            }
+        }
+
+        @media (min-width: 992px) {
             .leaflet-container {
                 height: 600px;
             }
@@ -905,17 +974,14 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
-
             20% {
                 opacity: 1;
                 transform: translateY(0);
             }
-
             80% {
                 opacity: 1;
                 transform: translateY(0);
             }
-
             100% {
                 opacity: 0;
                 transform: translateY(-10px);
@@ -927,20 +993,21 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            padding: 15px;
+            padding: 12px;
             color: white;
-            max-height: 70vh;
+            max-height: 60vh;
             overflow-y: auto;
             animation: slideUp 0.3s ease;
             position: relative;
             z-index: 1000;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         @media (min-width: 768px) {
             .layers-control-panel {
                 max-height: 400px;
                 font-size: 1rem;
+                padding: 15px;
             }
         }
 
@@ -949,7 +1016,6 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -960,7 +1026,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 10px;
+            padding: 8px 8px;
             border-radius: 10px;
             transition: all 0.2s ease;
             cursor: pointer;
@@ -982,15 +1048,14 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-
-            .layer-item>div:last-child {
+            .layer-item > div:last-child {
                 width: 100%;
                 justify-content: space-between;
             }
         }
 
         .layer-opacity-slider {
-            width: 80px;
+            width: 70px;
             height: 5px;
             -webkit-appearance: none;
             background: rgba(255, 255, 255, 0.2);
@@ -998,16 +1063,16 @@
             outline: none;
         }
 
-        @media (max-width: 480px) {
+        @media (min-width: 480px) {
             .layer-opacity-slider {
-                width: 60px;
+                width: 80px;
             }
         }
 
         .layer-opacity-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: var(--accent-primary);
             cursor: pointer;
@@ -1016,11 +1081,11 @@
         .footer-note {
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             padding-top: 1rem;
+            font-size: 0.7rem;
         }
 
         /* تحسينات عامة */
-        h5,
-        h6 {
+        h5, h6 {
             font-size: 1rem;
         }
 
@@ -1028,26 +1093,63 @@
             h5 {
                 font-size: 1.25rem;
             }
-
             h6 {
                 font-size: 1rem;
             }
         }
 
         .badge {
-            font-size: 0.75rem;
-            padding: 0.4rem 0.8rem;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
         }
 
         .btn-group .btn-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.7rem;
         }
 
         @media (min-width: 768px) {
             .btn-group .btn-sm {
                 padding: 0.25rem 0.8rem;
                 font-size: 0.875rem;
+            }
+        }
+
+        /* تحسين عرض الأزرار على الموبايل */
+        .btn {
+            touch-action: manipulation;
+        }
+
+        /* جعل العناصر القابلة للنقر أكبر قليلاً على الشاشات الصغيرة */
+        @media (max-width: 640px) {
+            .btn, .day-card, .favorite-actions button, .user-avatar {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            .btn--primary {
+                min-height: 44px;
+            }
+            .search-control {
+                min-height: 44px;
+            }
+        }
+
+        /* تحسين عرض شريط الطبقات على الموبايل */
+        #toggleLayersPanel {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+
+        /* تحسين عرض الرسم البياني */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            min-height: 180px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                min-height: 220px;
             }
         }
     </style>
@@ -1147,7 +1249,7 @@
                 <section class="current-card" data-aos="fade-left">
                     <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
                         <div>
-                            <h2 style="font-weight: 500; font-size:1.4rem; margin:0;">
+                            <h2 style="font-weight: 500; font-size:1.2rem; margin:0;">
                                 <i class="bi bi-geo-alt-fill" style="color: var(--accent-primary);"></i>
                                 {{ $displayName ?? ($weather['name'] ?? ($input ?? 'اللاذقية')) }}
                             </h2>
@@ -1185,7 +1287,7 @@
                             {{ round($weather['main']['temp'] ?? ($dailySummaries[0]['max'] ?? 26)) }}°
                         </span>
                         <img src="https://openweathermap.org/img/wn/{{ $weather['weather'][0]['icon'] ?? ($dailySummaries[0]['icon'] ?? '01d') }}@4x.png"
-                            width="70" height="70" alt="أيقونة الطقس"
+                            width="60" height="60" alt="أيقونة الطقس"
                             class="ms-2 weather-icon-animated animate__animated animate__pulse animate__infinite"
                             onerror="this.src='https://openweathermap.org/img/wn/01d@4x.png'">
                     </div>
@@ -1211,7 +1313,7 @@
                             <i class="bi bi-cloud-rain-heavy-fill" style="color: #7cc8ff;"></i>
                             <span style="font-weight: 600;">فرصة أمطار:</span>
                             <span
-                                style="font-weight: 700; color: #9cd4ff; font-size: 1.1rem;">{{ $dailySummaries[0]['rain_probability'] ?? ($currentRainProbability ?? 35) }}%</span>
+                                style="font-weight: 700; color: #9cd4ff; font-size: 1rem;">{{ $dailySummaries[0]['rain_probability'] ?? ($currentRainProbability ?? 35) }}%</span>
                         </div>
                     </div>
 
@@ -1230,7 +1332,7 @@
                                 <span
                                     class="day-name">{{ \Carbon\Carbon::parse($day['date'])->translatedFormat('D') }}</span>
                                 <img src="https://openweathermap.org/img/wn/{{ $day['icon'] }}@2x.png"
-                                    width="48" height="48" alt="أيقونة"
+                                    width="40" height="40" alt="أيقونة"
                                     onerror="this.src='https://openweathermap.org/img/wn/02d@2x.png'">
                                 <span class="day-temp-range">{{ $day['max'] }}° / {{ $day['min'] }}°</span>
                                 <div class="humidity-indicator">
@@ -1242,8 +1344,8 @@
                             @foreach ($sampleDays as $i => $dayName)
                                 <div class="day-card">
                                     <span class="day-name">{{ $dayName }}</span>
-                                    <img src="https://openweathermap.org/img/wn/02d@2x.png" width="48"
-                                        height="48">
+                                    <img src="https://openweathermap.org/img/wn/02d@2x.png" width="40"
+                                        height="40">
                                     <span class="day-temp-range">--° / --°</span>
                                     <div class="humidity-indicator">
                                         <div class="humidity-fill" style="width: 50%"></div>
@@ -1689,7 +1791,7 @@
                 <p class="text-muted">أدخل اسم المدينة لعرض بيانات الطقس</p>
                 <div class="mt-4">
                     <form method="GET" action="{{ route('weather.index') }}"
-                        class="d-flex justify-content-center gap-2">
+                        class="d-flex justify-content-center gap-2 flex-wrap">
                         <input type="text" name="city" class="form-control w-75 w-sm-50"
                             placeholder="مثال: London, Paris, دمشق">
                         <button type="submit" class="btn btn-primary">بحث</button>
@@ -1813,7 +1915,7 @@
                                 maxRotation: 45,
                                 minRotation: 40,
                                 font: {
-                                    size: 10
+                                    size: 9
                                 }
                             },
                             grid: {
@@ -1824,7 +1926,7 @@
                             ticks: {
                                 color: '#b0d4f0',
                                 font: {
-                                    size: 10
+                                    size: 9
                                 }
                             },
                             grid: {
@@ -2076,8 +2178,7 @@
 
         // ==================== دوال الخريطة الكاملة ====================
         let map, streetMap, satelliteLayer, terrainMap, darkMap;
-        let windLayer, rainViewerLayers = [],
-            cloudLayer, tempLayer, pressureLayer, snowLayer, vegetationLayer, firesLayer, eumetsatLayer;
+        let windLayer, rainViewerLayers = [], cloudLayer, tempLayer, pressureLayer, snowLayer, vegetationLayer, firesLayer, eumetsatLayer;
         let globalRainLayer;
         let lightningLayer, stormsLayer, darkCloudsLayer, cyclonesLayer;
         let rainViewerAnimationInterval = null;
