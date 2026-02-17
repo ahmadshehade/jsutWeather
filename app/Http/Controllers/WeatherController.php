@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/WeatherController.php
 
 namespace App\Http\Controllers;
 
@@ -8,7 +7,6 @@ use App\Services\WeatherService;
 use App\Services\AirQualityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 
@@ -113,6 +111,39 @@ class WeatherController extends Controller
                     }
                 }
 
+                // ---------------------------
+                // إضافة اتجاه الرياح للطقس الحالي
+                // ---------------------------
+                if ($weather && isset($weather['wind']['deg'])) {
+                    $weather['wind']['dir'] = $this->weatherService->getWindDirection($weather['wind']['deg']);
+                }
+
+                // ---------------------------
+                // إضافة اتجاه الرياح للتوقعات اليومية
+                // ---------------------------
+                if (isset($forecastData['daily']) && is_array($forecastData['daily'])) {
+                    foreach ($forecastData['daily'] as &$day) {
+                        if (isset($day['wind_deg'])) {
+                            $day['wind_dir'] = $this->weatherService->getWindDirection($day['wind_deg']);
+                        } else {
+                            $day['wind_dir'] = 'غير معروف';
+                        }
+                    }
+                }
+
+                // ---------------------------
+                // إضافة اتجاه الرياح للتوقعات الساعية
+                // ---------------------------
+                if (isset($forecastData['hourly']) && is_array($forecastData['hourly'])) {
+                    foreach ($forecastData['hourly'] as &$hour) {
+                        if (isset($hour['wind_deg'])) {
+                            $hour['wind_dir'] = $this->weatherService->getWindDirection($hour['wind_deg']);
+                        } else {
+                            $hour['wind_dir'] = 'غير معروف';
+                        }
+                    }
+                }
+
                 // جلب البيانات الإضافية إذا توفرت الإحداثيات
                 if ($coordinates && isset($coordinates['lat']) && isset($coordinates['lon'])) {
                     try {
@@ -159,6 +190,17 @@ class WeatherController extends Controller
             $favorites = FavoriteCity::where('user_id', $user->id)
                 ->orderBy('name')
                 ->get();
+
+            // ---------------------------
+            // إضافة اتجاه الرياح للطقس المخزن في المفضلة
+            // ---------------------------
+            foreach ($favorites as $fav) {
+                if ($fav->current_weather && isset($fav->current_weather['wind']['deg'])) {
+                    $weatherData = $fav->current_weather; // الحصول على المصفوفة
+                    $weatherData['wind']['dir'] = $this->weatherService->getWindDirection($weatherData['wind']['deg']);
+                    $fav->current_weather = $weatherData; // إعادة التعيين
+                }
+            }
         }
 
         return view('weather.index', compact(
@@ -234,6 +276,11 @@ class WeatherController extends Controller
                 $request->name
             );
 
+            // إضافة اتجاه الرياح قبل التخزين (اختياري)
+            if (isset($weather['wind']['deg'])) {
+                $weather['wind']['dir'] = $this->weatherService->getWindDirection($weather['wind']['deg']);
+            }
+
             $favorite = FavoriteCity::create([
                 'user_id' => Auth::id(),
                 'name' => $request->name,
@@ -305,6 +352,11 @@ class WeatherController extends Controller
                     $favorite->name
                 );
 
+                // إضافة اتجاه الرياح
+                if (isset($weather['wind']['deg'])) {
+                    $weather['wind']['dir'] = $this->weatherService->getWindDirection($weather['wind']['deg']);
+                }
+
                 $favorite->updateWeather($weather);
             } catch (\Exception $e) {
                 Log::error("فشل تحديث {$favorite->name}: " . $e->getMessage());
@@ -315,7 +367,7 @@ class WeatherController extends Controller
     }
 
     /**
-     * سجل البحث (يبقى كما هو)
+     * سجل البحث
      */
     protected function addToHistory(string $city)
     {
@@ -328,12 +380,9 @@ class WeatherController extends Controller
         Session::put('search_history', $history);
     }
 
-
-
-public function live()
-{
-    // هذا الـ endpoint لن يُستخدم مع WebSocket، لكن يمكن تركه للتوافق
-    return response()->json(['message' => 'Use WebSocket instead']);
-}
-
+    public function live()
+    {
+        // هذا الـ endpoint لن يُستخدم مع WebSocket، لكن يمكن تركه للتوافق
+        return response()->json(['message' => 'Use WebSocket instead']);
+    }
 }

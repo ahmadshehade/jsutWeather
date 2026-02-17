@@ -161,6 +161,7 @@
                 transform: translateY(-100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -214,6 +215,7 @@
             .title-tag .main {
                 font-size: 1.3rem;
             }
+
             .title-tag .sub {
                 font-size: 0.75rem;
             }
@@ -460,13 +462,17 @@
         }
 
         @media (min-width: 480px) {
-            .current-card, .analytics-card {
+
+            .current-card,
+            .analytics-card {
                 padding: 1.2rem;
             }
         }
 
         @media (min-width: 768px) {
-            .current-card, .analytics-card {
+
+            .current-card,
+            .analytics-card {
                 padding: 1.5rem;
             }
         }
@@ -496,9 +502,12 @@
         }
 
         @keyframes glow {
-            0%, 100% {
+
+            0%,
+            100% {
                 text-shadow: 0 0 20px rgba(59, 158, 255, 0.5);
             }
+
             50% {
                 text-shadow: 0 0 40px rgba(59, 158, 255, 0.8);
             }
@@ -709,6 +718,7 @@
             0% {
                 background-position: 200% 0;
             }
+
             100% {
                 background-position: -200% 0;
             }
@@ -804,6 +814,7 @@
                 align-items: center;
                 flex-wrap: wrap;
             }
+
             .favorite-actions {
                 margin-right: auto;
             }
@@ -974,14 +985,17 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             20% {
                 opacity: 1;
                 transform: translateY(0);
             }
+
             80% {
                 opacity: 1;
                 transform: translateY(0);
             }
+
             100% {
                 opacity: 0;
                 transform: translateY(-10px);
@@ -1016,6 +1030,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -1048,7 +1063,8 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-            .layer-item > div:last-child {
+
+            .layer-item>div:last-child {
                 width: 100%;
                 justify-content: space-between;
             }
@@ -1085,7 +1101,8 @@
         }
 
         /* تحسينات عامة */
-        h5, h6 {
+        h5,
+        h6 {
             font-size: 1rem;
         }
 
@@ -1093,6 +1110,7 @@
             h5 {
                 font-size: 1.25rem;
             }
+
             h6 {
                 font-size: 1rem;
             }
@@ -1122,13 +1140,19 @@
 
         /* جعل العناصر القابلة للنقر أكبر قليلاً على الشاشات الصغيرة */
         @media (max-width: 640px) {
-            .btn, .day-card, .favorite-actions button, .user-avatar {
+
+            .btn,
+            .day-card,
+            .favorite-actions button,
+            .user-avatar {
                 min-height: 44px;
                 min-width: 44px;
             }
+
             .btn--primary {
                 min-height: 44px;
             }
+
             .search-control {
                 min-height: 44px;
             }
@@ -1299,8 +1323,20 @@
                             إحساس
                             {{ round($weather['main']['feels_like'] ?? ($dailySummaries[0]['feels_like'] ?? 24)) }}°
                         </div>
+                        <!-- تم تعديل هذا السطر لإضافة اتجاه الرياح بشكل احترافي -->
                         <div class="meta-chip"><i class="bi bi-wind" style="color: var(--accent-secondary);"></i>
-                            رياح {{ $weather['wind']['speed'] ?? ($windSpeed ?? 4.2) }} م/ث</div>
+                            رياح {{ $weather['wind']['speed'] ?? ($windSpeed ?? 4.2) }} م/ث
+
+                        </div>
+                        <div class="meta-chip"><i class="bi bi-send" style="color: var(--accent-secondary);"></i>
+
+                            @if (isset($weather['wind']['dir']))
+                                <span class="border border-info rounded-pill px-2 py-0 text-info"
+                                    style="font-size: 0.7rem;">
+                                    <i class="bi bi-arrow-up"></i> {{ $weather['wind']['dir'] }}
+                                </span>
+                            @endif
+                        </div>
                         <div class="meta-chip"><i class="bi bi-cloud" style="color: var(--text-muted);"></i> غيوم
                             {{ $weather['clouds']['all'] ?? ($dailySummaries[0]['clouds'] ?? 50) }}%</div>
                         <div class="meta-chip"><i class="bi bi-sunrise" style="color: var(--warning);"></i>
@@ -1335,6 +1371,12 @@
                                     width="40" height="40" alt="أيقونة"
                                     onerror="this.src='https://openweathermap.org/img/wn/02d@2x.png'">
                                 <span class="day-temp-range">{{ $day['max'] }}° / {{ $day['min'] }}°</span>
+                                @if (isset($day['wind_dir']))
+                                    <span class="border border-info rounded-pill px-2 py-0 text-info"
+                                        style="font-size: 0.6rem;">
+                                        <i class="bi bi-arrow-up"></i> {{ $day['wind_dir'] }}
+                                    </span>
+                                @endif
                                 <div class="humidity-indicator">
                                     <div class="humidity-fill" style="width: {{ $day['humidity'] }}%"></div>
                                 </div>
@@ -1378,6 +1420,12 @@
                                                 <small class="city-temp">
                                                     <i class="bi bi-thermometer-half"></i>
                                                     {{ round($fav->current_weather['main']['temp'] ?? 0) }}°C
+                                                    @if (isset($fav->current_weather['wind']['dir']))
+                                                        <span class="badge bg-info" style="font-size: 0.6rem;">
+                                                            <i class="bi bi-wind"></i>
+                                                            {{ $fav->current_weather['wind']['dir'] }}
+                                                        </span>
+                                                    @endif
                                                 </small>
                                             @endif
                                         </div>
@@ -1805,6 +1853,32 @@
                 MODIS, Blitzortung (عبر WebSocket), Zoom Earth | جميع الخدمات مجانية</span>
         </div>
     </div>
+
+    <!-- مودال تأكيد إضافة/إزالة المفضلة -->
+    <div class="modal fade" id="favoriteModal" tabindex="-1" aria-labelledby="favoriteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="background: rgba(10, 30, 45, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="favoriteModalLabel"><i class="bi bi-star-fill text-warning"></i>
+                        تأكيد العملية</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body text-center" id="favoriteModalBody">
+                    <!-- المحتوى سيتم تعبئته ديناميكياً -->
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                            class="bi bi-x-lg"></i> إلغاء</button>
+                    <button type="button" class="btn btn-warning" id="favoriteModalConfirmBtn"><i
+                            class="bi bi-check-lg"></i> تأكيد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -1963,6 +2037,7 @@
                     '📅 ' + day.label + '\n' +
                     '🌡 درجة الحرارة: ' + day.max + '° / ' + day.min + '°\n' +
                     '💧 رطوبة: ' + day.humidity + '%\n' +
+                    '🧭 اتجاه الرياح: ' + (day.wind_dir || 'غير معروف') + '\n' +
                     '☔️ فرصة أمطار: ' + day.rain_probability + '%\n' +
                     '💨 هبات رياح: ' + day.wind_gust + ' م/ث\n' +
                     '🌧 كمية أمطار: ' + day.rain_volume + ' ملم\n' +
@@ -1971,6 +2046,10 @@
                 );
             }
         };
+
+        // متغيرات للمودال
+        let pendingAction = null;
+        let pendingData = null;
 
         // دوال المفضلة
         window.toggleFavorite = function() {
@@ -1996,6 +2075,7 @@
             const isFavorite = icon.classList.contains('bi-star-fill');
 
             if (isFavorite) {
+                // إزالة من المفضلة
                 @php
                     $currentFavoriteId = null;
                     foreach ($favorites as $fav) {
@@ -2006,47 +2086,134 @@
                     }
                 @endphp
                 @if ($currentFavoriteId)
-                    fetch('{{ route('weather.favorite.remove') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                    'content')
-                            },
-                            body: JSON.stringify({
-                                id: {{ $currentFavoriteId }}
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                icon.className = 'bi bi-star';
-                                text.innerText = 'أضف للمفضلة';
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'تم',
-                                    text: 'تمت الإزالة من المفضلة',
-                                    timer: 1500,
-                                    showConfirmButton: false
+                    Swal.fire({
+                        title: 'تأكيد الإزالة',
+                        html: `هل أنت متأكد من إزالة <strong>${cityName}</strong> من المفضلة؟`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ff6b6b',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'نعم، أزل',
+                        cancelButtonText: 'إلغاء',
+                        background: '#0a1e2a',
+                        color: '#fff'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch('{{ route('weather.favorite.remove') }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                            .getAttribute('content')
+                                    },
+                                    body: JSON.stringify({
+                                        id: {{ $currentFavoriteId }}
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        icon.className = 'bi bi-star';
+                                        text.innerText = 'أضف للمفضلة';
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'تم',
+                                            text: 'تمت الإزالة من المفضلة',
+                                            timer: 1500,
+                                            showConfirmButton: false,
+                                            background: '#0a1e2a',
+                                            color: '#fff'
+                                        });
+                                        setTimeout(() => location.reload(), 1500);
+                                    }
                                 });
-                                setTimeout(() => location.reload(), 1500);
-                            }
-                        });
+                        }
+                    });
                 @endif
             } else {
+                // إضافة إلى المفضلة
+                Swal.fire({
+                    title: 'تأكيد الإضافة',
+                    html: `هل أنت متأكد من إضافة <strong>${cityName}</strong> إلى المفضلة؟`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'نعم، أضف',
+                    cancelButtonText: 'إلغاء',
+                    background: '#0a1e2a',
+                    color: '#fff'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('{{ route('weather.favorite.add') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                        .getAttribute('content')
+                                },
+                                body: JSON.stringify({
+                                    name: cityName,
+                                    lat: lat,
+                                    lon: lon,
+                                    country: ''
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    icon.className = 'bi bi-star-fill';
+                                    text.innerText = 'في المفضلة';
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'تم',
+                                        text: 'تمت الإضافة للمفضلة',
+                                        timer: 1500,
+                                        showConfirmButton: false,
+                                        background: '#0a1e2a',
+                                        color: '#fff'
+                                    });
+                                    setTimeout(() => location.reload(), 1500);
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'خطأ',
+                                        text: data.message || 'حدث خطأ',
+                                        background: '#0a1e2a',
+                                        color: '#fff'
+                                    });
+                                }
+                            });
+                    }
+                });
+            }
+        @else
+            Swal.fire({
+                icon: 'warning',
+                title: 'تنبيه',
+                text: 'يجب تسجيل الدخول أولاً',
+                background: '#0a1e2a',
+                color: '#fff'
+            }).then(() => {
+                window.location.href = '{{ route('login') }}';
+            });
+        @endauth
+        };
+
+        function executeFavoriteAction() {
+            const btn = document.getElementById('favoriteBtn');
+            const icon = btn.querySelector('i');
+            const text = document.getElementById('favoriteText');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('favoriteModal'));
+
+            if (pendingAction === 'add') {
                 fetch('{{ route('weather.favorite.add') }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                'content')
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         },
-                        body: JSON.stringify({
-                            name: cityName,
-                            lat: lat,
-                            lon: lon,
-                            country: ''
-                        })
+                        body: JSON.stringify(pendingData)
                     })
                     .then(response => response.json())
                     .then(data => {
@@ -2069,17 +2236,34 @@
                             });
                         }
                     });
+            } else if (pendingAction === 'remove') {
+                fetch('{{ route('weather.favorite.remove') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(pendingData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            icon.className = 'bi bi-star';
+                            text.innerText = 'أضف للمفضلة';
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'تم',
+                                text: 'تمت الإزالة من المفضلة',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            setTimeout(() => location.reload(), 1500);
+                        }
+                    });
             }
-        @else
-            Swal.fire({
-                icon: 'warning',
-                title: 'تنبيه',
-                text: 'يجب تسجيل الدخول أولاً'
-            }).then(() => {
-                window.location.href = '{{ route('login') }}';
-            });
-        @endauth
-        };
+
+            modal.hide();
+        }
 
         window.removeFavorite = function(id) {
             Swal.fire({
@@ -2178,7 +2362,8 @@
 
         // ==================== دوال الخريطة الكاملة ====================
         let map, streetMap, satelliteLayer, terrainMap, darkMap;
-        let windLayer, rainViewerLayers = [], cloudLayer, tempLayer, pressureLayer, snowLayer, vegetationLayer, firesLayer, eumetsatLayer;
+        let windLayer, rainViewerLayers = [],
+            cloudLayer, tempLayer, pressureLayer, snowLayer, vegetationLayer, firesLayer, eumetsatLayer;
         let globalRainLayer;
         let lightningLayer, stormsLayer, darkCloudsLayer, cyclonesLayer;
         let rainViewerAnimationInterval = null;

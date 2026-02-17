@@ -94,7 +94,6 @@ class WeatherService
                 }
 
                 throw new \Exception('تعذر جلب بيانات الطقس لهذه الإحداثيات');
-
             } catch (\Exception $e) {
                 Log::error('Weather by Coords Error: ' . $e->getMessage());
                 throw new \Exception('تعذر جلب بيانات الطقس');
@@ -135,7 +134,6 @@ class WeatherService
                     $data = $response2->json('results.0');
                     return $data['name'] . '، ' . ($data['country_code'] ?? '');
                 }
-
             } catch (\Exception $e) {
                 Log::error('Reverse Geocoding Error: ' . $e->getMessage());
             }
@@ -167,7 +165,6 @@ class WeatherService
                 }
 
                 return [];
-
             } catch (\Exception $e) {
                 Log::error('Forecast by Coords Error: ' . $e->getMessage());
                 return [];
@@ -197,7 +194,6 @@ class WeatherService
 
                 // محاولة المصدر البديل
                 return $this->getBackupWeather($city);
-
             } catch (\Exception $e) {
                 Log::error('Weather API Error: ' . $e->getMessage());
 
@@ -243,7 +239,6 @@ class WeatherService
                 }
 
                 return [];
-
             } catch (\Exception $e) {
                 Log::error('Forecast API Error: ' . $e->getMessage());
                 return [];
@@ -434,7 +429,7 @@ class WeatherService
     }
 
     /**
-     * معالجة بيانات التوقعات
+     * معالجة بيانات التوقعات (معدلة لتشمل wind_deg)
      */
     protected function processForecastData(array $data): array
     {
@@ -453,6 +448,8 @@ class WeatherService
                     'humidities' => [],
                     'icons' => [],
                     'rain_prob' => [],
+                    'wind_degs' => [],
+                    'wind_gusts' => [],
                 ];
             }
 
@@ -460,6 +457,8 @@ class WeatherService
             $daily[$dayKey]['humidities'][] = $item['main']['humidity'];
             $daily[$dayKey]['icons'][] = $item['weather'][0]['icon'];
             $daily[$dayKey]['rain_prob'][] = $item['pop'] ?? 0;
+            $daily[$dayKey]['wind_degs'][] = $item['wind']['deg'] ?? 0;
+            $daily[$dayKey]['wind_gusts'][] = $item['wind']['gust'] ?? null;
 
             if (count($hourly) < 24) {
                 $hourly[] = [
@@ -469,12 +468,18 @@ class WeatherService
                     'rain_prob' => round(($item['pop'] ?? 0) * 100),
                     'icon' => $item['weather'][0]['icon'],
                     'description' => $item['weather'][0]['description'],
+                    'wind_speed' => $item['wind']['speed'] ?? null,
+                    'wind_deg' => $item['wind']['deg'] ?? null,
+                    'wind_gust' => $item['wind']['gust'] ?? null,
                 ];
             }
         }
 
         $dailySummaries = [];
         foreach (array_slice($daily, 0, 7) as $dayKey => $dayData) {
+            $firstWindDeg = $dayData['wind_degs'][0] ?? null;
+            $maxWindGust = !empty($dayData['wind_gusts']) ? max(array_filter($dayData['wind_gusts'])) : null;
+
             $dailySummaries[] = [
                 'date' => $dayKey,
                 'label' => $dayData['label'],
@@ -483,7 +488,8 @@ class WeatherService
                 'humidity' => round(array_sum($dayData['humidities']) / count($dayData['humidities'])),
                 'icon' => $dayData['icons'][array_key_first($dayData['icons'])],
                 'rain_probability' => round(max($dayData['rain_prob']) * 100),
-                'wind_gust' => $this->calculateWindGust($dayData['temps']),
+                'wind_gust' => $maxWindGust ?? $this->calculateWindGust($dayData['temps']),
+                'wind_deg' => $firstWindDeg,
                 'rain_volume' => round($this->calculateRainVolume($dayData['rain_prob']), 1),
                 'pressure' => 1015,
             ];
@@ -647,7 +653,7 @@ class WeatherService
 
     protected function getUVLevel(int $uv): string
     {
-        return match(true) {
+        return match (true) {
             $uv <= 2 => 'منخفض',
             $uv <= 5 => 'متوسط',
             $uv <= 7 => 'مرتفع',
@@ -658,7 +664,7 @@ class WeatherService
 
     protected function getUVColor(int $uv): string
     {
-        return match(true) {
+        return match (true) {
             $uv <= 2 => '#6ad4b4',
             $uv <= 5 => '#ffd93d',
             $uv <= 7 => '#ff9f4b',
@@ -675,5 +681,33 @@ class WeatherService
             'level' => $this->getUVLevel($uv),
             'color' => $this->getUVColor($uv),
         ];
+    }
+
+    public function getWindDirection($degrees)
+    {
+        $directions = [
+            'شمال' => [337.5, 22.5], // نطاق يمتد عبر 0
+            'شمال شرق' => [22.5, 67.5],
+            'شرق' => [67.5, 112.5],
+            'جنوب شرق' => [112.5, 157.5],
+            'جنوب' => [157.5, 202.5],
+            'جنوب غرب' => [202.5, 247.5],
+            'غرب' => [247.5, 292.5],
+            'شمال غرب' => [292.5, 337.5],
+        ];
+
+        // معالجة حالة الـ 0° (شمال)
+        if ($degrees >= 337.5 || $degrees < 22.5) {
+            return 'شمال';
+        }
+
+        foreach ($directions as $name => $range) {
+            if ($name === 'شمال') continue;
+            if ($degrees >= $range[0] && $degrees < $range[1]) {
+                return $name;
+            }
+        }
+
+        return 'غير معروف';
     }
 }
