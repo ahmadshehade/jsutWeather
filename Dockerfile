@@ -9,7 +9,8 @@ RUN chown -R www-data:www-data /var/www/html \
 
 USER www-data
 
-
-
 ENV PORT=8080
+
 ENV AUTORUN_MIGRATIONS=true
+
+# ENV PHP_OPCACHE_ENABLE=1
